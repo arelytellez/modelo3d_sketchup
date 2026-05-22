@@ -109,7 +109,7 @@ const loader = new GLTFLoader();
 
 loader.load(
 
-    './models/Aula_Y8.glb',
+    './models/aula_y.glb',
 
     function (gltf) {
 
