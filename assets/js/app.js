@@ -23,6 +23,14 @@ const camera = new THREE.PerspectiveCamera(
 
 camera.position.set(0, 2, 5);
 
+// VARIABLES DE MOVIMIENTO
+let moveForward = false;
+let moveBackward = false;
+let moveLeft = false;
+let moveRight = false;
+
+const speed = 0.1;
+
 
 // RENDER
 const renderer = new THREE.WebGLRenderer({
@@ -173,6 +181,26 @@ function animate() {
 
     controls.update();
 
+    // ADELANTE
+    if (moveForward) {
+        camera.position.z -= speed;
+    }
+
+    // ATRAS
+    if (moveBackward) {
+        camera.position.z += speed;
+    }
+
+    // IZQUIERDA
+    if (moveLeft) {
+        camera.position.x -= speed;
+    }
+
+    // DERECHA
+    if (moveRight) {
+        camera.position.x += speed;
+    }
+
     renderer.render(
         scene,
         camera
@@ -181,3 +209,51 @@ function animate() {
 }
 
 renderer.setAnimationLoop(animate);
+// TECLA PRESIONADA
+document.addEventListener('keydown', (event) => {
+
+    switch(event.code){
+
+        case 'KeyW':
+            moveForward = true;
+            break;
+
+        case 'KeyS':
+            moveBackward = true;
+            break;
+
+        case 'KeyA':
+            moveLeft = true;
+            break;
+
+        case 'KeyD':
+            moveRight = true;
+            break;
+    }
+
+});
+
+
+// TECLA SOLTADA
+document.addEventListener('keyup', (event) => {
+
+    switch(event.code){
+
+        case 'KeyW':
+            moveForward = false;
+            break;
+
+        case 'KeyS':
+            moveBackward = false;
+            break;
+
+        case 'KeyA':
+            moveLeft = false;
+            break;
+
+        case 'KeyD':
+            moveRight = false;
+            break;
+    }
+
+});
