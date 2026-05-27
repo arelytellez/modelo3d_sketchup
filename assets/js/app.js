@@ -102,7 +102,7 @@ document.body.appendChild(
 // CONTROLES
 // ======================
 
-const controls =
+/*const controls =
     new OrbitControls(
 
         camera,
@@ -110,7 +110,7 @@ const controls =
 
     );
 
-controls.enableDamping = true;
+controls.enableDamping = true;*/
 
 
 // ======================
@@ -279,7 +279,7 @@ function updateMovement() {
 
 
     // ======================
-    // JOYSTICK IZQUIERDO
+    // STICK IZQUIERDO
     // ======================
 
     const axisX = gp.axes[0];
@@ -298,20 +298,13 @@ function updateMovement() {
     let moveZ = 0;
 
 
-    if (
-        Math.abs(axisX)
-        > deadZone
-    ) {
+    if (Math.abs(axisX) > deadZone) {
 
         moveX = axisX;
 
     }
 
-
-    if (
-        Math.abs(axisY)
-        > deadZone
-    ) {
+    if (Math.abs(axisY) > deadZone) {
 
         moveZ = axisY;
 
@@ -319,15 +312,13 @@ function updateMovement() {
 
 
     // ======================
-    // DIRECCION DE LA CAMARA
+    // DIRECCION FRENTE
     // ======================
 
     const forward =
         new THREE.Vector3();
 
-    camera.getWorldDirection(
-        forward
-    );
+    camera.getWorldDirection(forward);
 
     forward.y = 0;
 
@@ -335,7 +326,7 @@ function updateMovement() {
 
 
     // ======================
-    // DERECHA
+    // DIRECCION DERECHA
     // ======================
 
     const right =
@@ -343,19 +334,17 @@ function updateMovement() {
 
     right.crossVectors(
 
-        forward,
+        new THREE.Vector3(0,1,0),
 
-        new THREE.Vector3(
-            0,
-            1,
-            0
-        )
+        forward
 
     );
 
+    right.normalize();
+
 
     // ======================
-    // MOVIMIENTO
+    // ADELANTE / ATRAS
     // ======================
 
     player.position.addScaledVector(
@@ -366,6 +355,10 @@ function updateMovement() {
 
     );
 
+
+    // ======================
+    // IZQUIERDA / DERECHA
+    // ======================
 
     player.position.addScaledVector(
 
@@ -388,7 +381,7 @@ function animate() {
     // FUERA DE VR
     if (!renderer.xr.isPresenting) {
 
-        controls.update();
+        //controls.update();
 
     }
 
