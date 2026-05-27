@@ -236,33 +236,6 @@ y exportado en formato:
 
 ---
 
-# 📚 Librerías Utilizadas
-
-## Three.js
-
-```js
-import * as THREE from 'three';
-```
-
-## OrbitControls
-
-```js
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-```
-
-## GLTFLoader
-
-```js
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-```
-
-## VRButton
-
-```js
-import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-```
-
----
 
 # 👨‍💻 Autor
 

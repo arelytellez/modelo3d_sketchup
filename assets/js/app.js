@@ -1,118 +1,202 @@
 import * as THREE from 'three';
 
-import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/controls/OrbitControls.js';
+import { OrbitControls }
+from 'https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/controls/OrbitControls.js';
 
-import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/loaders/GLTFLoader.js';
+import { GLTFLoader }
+from 'https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/loaders/GLTFLoader.js';
 
-import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/webxr/VRButton.js';
+import { VRButton }
+from 'https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/webxr/VRButton.js';
 
 
+// ======================
 // ESCENA
+// ======================
+
 const scene = new THREE.Scene();
 
-scene.background = new THREE.Color(0x202020);
+scene.background =
+    new THREE.Color(0x202020);
 
 
+// ======================
 // CAMARA
-const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
+// ======================
+
+const camera =
+    new THREE.PerspectiveCamera(
+
+        75,
+
+        window.innerWidth /
+        window.innerHeight,
+
+        0.1,
+
+        1000
+
+    );
+
+
+// ======================
+// PLAYER (CUERPO)
+// ======================
+
+const player = new THREE.Group();
+
+player.position.set(
+    0,
+    1.6,
+    5
 );
 
-camera.position.set(0, 2, 5);
+scene.add(player);
 
-// VARIABLES DE MOVIMIENTO
-let moveForward = false;
-let moveBackward = false;
-let moveLeft = false;
-let moveRight = false;
-
-const speed = 0.1;
+player.add(camera);
 
 
-// RENDER
-const renderer = new THREE.WebGLRenderer({
-    antialias: true
-});
+// ======================
+// RENDERER
+// ======================
+
+const renderer =
+    new THREE.WebGLRenderer({
+
+        antialias: true
+
+    });
 
 renderer.setSize(
+
     window.innerWidth,
     window.innerHeight
+
+);
+
+renderer.setPixelRatio(
+    window.devicePixelRatio
 );
 
 renderer.xr.enabled = true;
 
+renderer.shadowMap.enabled = true;
+
 document
-    .getElementById('contenedor3D')
+    .getElementById("contenedor3D")
     .appendChild(renderer.domElement);
 
 
+// ======================
 // BOTON VR
+// ======================
+
 document.body.appendChild(
+
     VRButton.createButton(renderer)
+
 );
 
 
+// ======================
 // CONTROLES
-const controls = new OrbitControls(
-    camera,
-    renderer.domElement
-);
+// ======================
+
+const controls =
+    new OrbitControls(
+
+        camera,
+        renderer.domElement
+
+    );
 
 controls.enableDamping = true;
 
 
+// ======================
 // LUCES
-const ambientLight = new THREE.AmbientLight(
-    0xffffff,
-    2
-);
+// ======================
+
+const ambientLight =
+    new THREE.AmbientLight(
+
+        0xffffff,
+        1.5
+
+    );
 
 scene.add(ambientLight);
 
 
-const directionalLight = new THREE.DirectionalLight(
-    0xffffff,
-    2
+const directionalLight =
+    new THREE.DirectionalLight(
+
+        0xffffff,
+        2
+
+    );
+
+directionalLight.position.set(
+    5,
+    10,
+    7
 );
 
-directionalLight.position.set(5, 10, 5);
+directionalLight.castShadow = true;
 
 scene.add(directionalLight);
 
 
+// ======================
 // GRID
-const grid = new THREE.GridHelper(
-    50,
-    50
-);
+// ======================
+
+const grid =
+    new THREE.GridHelper(
+        50,
+        50
+    );
 
 scene.add(grid);
 
 
+// ======================
 // PISO
-const floorGeometry = new THREE.PlaneGeometry(
-    50,
-    50
-);
+// ======================
 
-const floorMaterial = new THREE.MeshStandardMaterial({
-    color: 0x808080
-});
+const floorGeometry =
+    new THREE.PlaneGeometry(
+        50,
+        50
+    );
 
-const floor = new THREE.Mesh(
-    floorGeometry,
-    floorMaterial
-);
+const floorMaterial =
+    new THREE.MeshStandardMaterial({
 
-floor.rotation.x = -Math.PI / 2;
+        color: 0x555555
+
+    });
+
+const floor =
+    new THREE.Mesh(
+
+        floorGeometry,
+        floorMaterial
+
+    );
+
+floor.rotation.x =
+    -Math.PI / 2;
+
+floor.receiveShadow = true;
 
 scene.add(floor);
 
 
+// ======================
 // MODELO
+// ======================
+
 const loader = new GLTFLoader();
 
 loader.load(
@@ -121,31 +205,48 @@ loader.load(
 
     function (gltf) {
 
-        const modelo = gltf.scene;
+        const model =
+            gltf.scene;
 
-        modelo.scale.set(
+        model.scale.set(
             1,
             1,
             1
         );
 
-        modelo.position.set(
+        model.position.set(
             0,
             0,
             0
         );
 
-        scene.add(modelo);
+        model.traverse((node) => {
 
-        console.log("Modelo cargado");
+            if (node.isMesh) {
+
+                node.castShadow = true;
+
+                node.receiveShadow = true;
+
+            }
+
+        });
+
+        scene.add(model);
+
+        console.log(
+            "Modelo cargado"
+        );
 
     },
 
     function (xhr) {
 
         console.log(
+
             (xhr.loaded / xhr.total * 100)
             + '% cargado'
+
         );
 
     },
@@ -159,47 +260,139 @@ loader.load(
 );
 
 
-// RESPONSIVE
-window.addEventListener('resize', () => {
+// ======================
+// MOVIMIENTO XBOX
+// ======================
 
-    camera.aspect =
-        window.innerWidth /
-        window.innerHeight;
+const moveSpeed = 0.08;
 
-    camera.updateProjectionMatrix();
+function updateMovement() {
 
-    renderer.setSize(
-        window.innerWidth,
-        window.innerHeight
+    const gamepads =
+        navigator.getGamepads();
+
+    if (!gamepads) return;
+
+    const gp = gamepads[0];
+
+    if (!gp) return;
+
+
+    // ======================
+    // JOYSTICK IZQUIERDO
+    // ======================
+
+    const axisX = gp.axes[0];
+
+    const axisY = gp.axes[1];
+
+
+    // ======================
+    // ZONA MUERTA
+    // ======================
+
+    const deadZone = 0.15;
+
+    let moveX = 0;
+
+    let moveZ = 0;
+
+
+    if (
+        Math.abs(axisX)
+        > deadZone
+    ) {
+
+        moveX = axisX;
+
+    }
+
+
+    if (
+        Math.abs(axisY)
+        > deadZone
+    ) {
+
+        moveZ = axisY;
+
+    }
+
+
+    // ======================
+    // DIRECCION DE LA CAMARA
+    // ======================
+
+    const forward =
+        new THREE.Vector3();
+
+    camera.getWorldDirection(
+        forward
     );
 
-});
+    forward.y = 0;
+
+    forward.normalize();
 
 
+    // ======================
+    // DERECHA
+    // ======================
+
+    const right =
+        new THREE.Vector3();
+
+    right.crossVectors(
+
+        forward,
+
+        new THREE.Vector3(
+            0,
+            1,
+            0
+        )
+
+    );
+
+
+    // ======================
+    // MOVIMIENTO
+    // ======================
+
+    player.position.addScaledVector(
+
+        forward,
+
+        -moveZ * moveSpeed
+
+    );
+
+
+    player.position.addScaledVector(
+
+        right,
+
+        moveX * moveSpeed
+
+    );
+
+}
+
+
+// ======================
 // ANIMACION
+// ======================
+
 function animate() {
 
-    controls.update();
+    // SOLO CONTROLES
+    // FUERA DE VR
+    if (!renderer.xr.isPresenting) {
 
-    // ADELANTE
-    if (moveForward) {
-        camera.position.z -= speed;
+        controls.update();
+
     }
 
-    // ATRAS
-    if (moveBackward) {
-        camera.position.z += speed;
-    }
-
-    // IZQUIERDA
-    if (moveLeft) {
-        camera.position.x -= speed;
-    }
-
-    // DERECHA
-    if (moveRight) {
-        camera.position.x += speed;
-    }
+    updateMovement();
 
     renderer.render(
         scene,
@@ -208,52 +401,78 @@ function animate() {
 
 }
 
-renderer.setAnimationLoop(animate);
-// TECLA PRESIONADA
-document.addEventListener('keydown', (event) => {
 
-    switch(event.code){
+// ======================
+// LOOP
+// ======================
 
-        case 'KeyW':
-            moveForward = true;
-            break;
+renderer.setAnimationLoop(
+    animate
+);
 
-        case 'KeyS':
-            moveBackward = true;
-            break;
 
-        case 'KeyA':
-            moveLeft = true;
-            break;
+// ======================
+// RESPONSIVE
+// ======================
 
-        case 'KeyD':
-            moveRight = true;
-            break;
+window.addEventListener(
+
+    'resize',
+
+    () => {
+
+        camera.aspect =
+
+            window.innerWidth /
+            window.innerHeight;
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(
+
+            window.innerWidth,
+            window.innerHeight
+
+        );
+
     }
 
-});
+);
 
 
-// TECLA SOLTADA
-document.addEventListener('keyup', (event) => {
+// ======================
+// GAMEPAD
+// ======================
 
-    switch(event.code){
+window.addEventListener(
 
-        case 'KeyW':
-            moveForward = false;
-            break;
+    "gamepadconnected",
 
-        case 'KeyS':
-            moveBackward = false;
-            break;
+    (event) => {
 
-        case 'KeyA':
-            moveLeft = false;
-            break;
+        console.log(
+            "Control Xbox conectado"
+        );
 
-        case 'KeyD':
-            moveRight = false;
-            break;
+        console.log(
+            event.gamepad
+        );
+
     }
 
-});
+);
+
+
+window.addEventListener(
+
+    "gamepaddisconnected",
+
+    () => {
+
+        console.log(
+            "Control desconectado"
+        );
+
+    }
+
+);
