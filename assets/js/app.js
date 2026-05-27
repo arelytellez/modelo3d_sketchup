@@ -269,8 +269,7 @@ const moveSpeed = 0.08;
 
 function updateMovement() {
 
-    const gamepads =
-        navigator.getGamepads();
+    const gamepads = navigator.getGamepads();
 
     if (!gamepads) return;
 
@@ -294,79 +293,24 @@ function updateMovement() {
 
     const deadZone = 0.15;
 
-    let moveX = 0;
-
-    let moveZ = 0;
-
-
-    if (Math.abs(axisX) > deadZone) {
-
-        moveX = axisX;
-
-    }
-
-    if (Math.abs(axisY) > deadZone) {
-
-        moveZ = axisY;
-
-    }
-
-
-    // ======================
-    // DIRECCION DE LA CAMARA
-    // ======================
-
-    const direction =
-        new THREE.Vector3();
-
-    camera.getWorldDirection(direction);
-
-
-    // IMPORTANTE:
-    // BLOQUEAR MOVIMIENTO VERTICAL
-    direction.y = 0;
-
-    direction.normalize();
-
-
-    // ======================
-    // VECTOR DERECHA
-    // ======================
-
-    const right =
-        new THREE.Vector3();
-
-    right.crossVectors(
-
-        new THREE.Vector3(0,1,0),
-
-        direction
-
-    );
-
-    right.normalize();
-
 
     // ======================
     // MOVIMIENTO
     // ======================
 
-    player.position.x +=
-        direction.x *
-        (-moveZ * moveSpeed);
+    if (Math.abs(axisY) > deadZone) {
 
-    player.position.z +=
-        direction.z *
-        (-moveZ * moveSpeed);
+        // ADELANTE / ATRAS
+        player.position.z += axisY * moveSpeed;
 
+    }
 
-    player.position.x +=
-        right.x *
-        (moveX * moveSpeed);
+    if (Math.abs(axisX) > deadZone) {
 
-    player.position.z +=
-        right.z *
-        (moveX * moveSpeed);
+        // IZQUIERDA / DERECHA
+        player.position.x += axisX * moveSpeed;
+
+    }
 
 }
 
