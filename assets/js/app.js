@@ -48,7 +48,7 @@ const player = new THREE.Group();
 player.position.set(
     0,
     1.6,
-    5
+    0
 );
 
 scene.add(player);
@@ -313,21 +313,24 @@ function updateMovement() {
 
 
     // ======================
-    // DIRECCION FRENTE
+    // DIRECCION DE LA CAMARA
     // ======================
 
-    const forward =
+    const direction =
         new THREE.Vector3();
 
-    camera.getWorldDirection(forward);
+    camera.getWorldDirection(direction);
 
-    forward.y = 0;
 
-    forward.normalize();
+    // IMPORTANTE:
+    // BLOQUEAR MOVIMIENTO VERTICAL
+    direction.y = 0;
+
+    direction.normalize();
 
 
     // ======================
-    // DIRECCION DERECHA
+    // VECTOR DERECHA
     // ======================
 
     const right =
@@ -337,7 +340,7 @@ function updateMovement() {
 
         new THREE.Vector3(0,1,0),
 
-        forward
+        direction
 
     );
 
@@ -345,32 +348,27 @@ function updateMovement() {
 
 
     // ======================
-    // ADELANTE / ATRAS
+    // MOVIMIENTO
     // ======================
 
-    player.position.addScaledVector(
+    player.position.x +=
+        direction.x *
+        (-moveZ * moveSpeed);
 
-        forward,
-
-        -moveZ * moveSpeed
-
-    );
+    player.position.z +=
+        direction.z *
+        (-moveZ * moveSpeed);
 
 
-    // ======================
-    // IZQUIERDA / DERECHA
-    // ======================
+    player.position.x +=
+        right.x *
+        (moveX * moveSpeed);
 
-    player.position.addScaledVector(
-
-        right,
-
-        moveX * moveSpeed
-
-    );
+    player.position.z +=
+        right.z *
+        (moveX * moveSpeed);
 
 }
-
 
 // ======================
 // ANIMACION
