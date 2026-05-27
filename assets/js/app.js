@@ -55,6 +55,7 @@ scene.add(player);
 
 player.add(camera);
 
+camera.lookAt(0, 1.6, 0);
 
 // ======================
 // RENDERER
