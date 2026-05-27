@@ -47,7 +47,7 @@ const player = new THREE.Group();
 
 player.position.set(
     0,
-    0.3,
+    0.1,
     0
 );
 
